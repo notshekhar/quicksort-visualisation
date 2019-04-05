@@ -11,7 +11,7 @@ ctx.fillRect(0, 0, canvas.width, canvas.height)
 
 let x = 2
 
-function draw() {
+async function draw() {
   //clearing canvas
   ctx.fillStyle = 'black'
   ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -31,37 +31,38 @@ function draw() {
 }
 
 
-function quicksort(arr, start, end) {
+async function quicksort(arr, start, end) {
+  draw()
   if (start >= end) {
     return true
   }else{
-    let index = partition(arr, start, end)
-    quicksort(arr, start, index - 1)
-    quicksort(arr, index + 1, end)
+    let index = await partition(arr, start, end)
+    await Promise.all([quicksort(arr, start, index - 1), quicksort(arr, index + 1, end)])
+
   }
 }
 
-function partition(arr, start, end) {
+async function partition(arr, start, end) {
   let pivot = end
   let index = start
   for (let i = start; i < end; i++) {
     if (arr[i] < arr[pivot]) {
-      swap(arr, i, index)
+      await swap(arr, i, index)
       index++
-    }else{
-
     }
   }
-  swap(arr, pivot, index)
+  await swap(arr, pivot, index)
   return index
 }
-function swap(arr, a, b) {
+async function swap(arr, a, b) {
+  await sleep(21)
   let temp = arr[a]
   arr[a] = arr[b]
   arr[b] = temp
 }
 
+async function sleep(ms){
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 quicksort(arr, 0, arr.length-1)
-draw()
-// let interval = setInterval(() => {
-// }, 250)
